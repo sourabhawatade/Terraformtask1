@@ -1,2 +1,2 @@
-rsg = "ex-1resource"
+rsg = "ex-11resource"
 location = "West US"
