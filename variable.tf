@@ -1,0 +1,7 @@
+variable "rsg" {
+  
+}
+
+variable "location" {
+  
+}
