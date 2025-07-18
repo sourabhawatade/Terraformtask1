@@ -1,46 +1,38 @@
 name: Ex-1workflow
 
-
 on:
-   push:
-       branches:
-           - master
-env:
-           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-
+  push:
+    branches:
+      - master
 
 jobs:
-   SetUp:
-       name: terraformgithub
-       runs-on: ubuntu-latest
+  SetUp:
+    name: terraformgithub
+    runs-on: ubuntu-latest
 
+    env:
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.1.7"
 
-       steps:
-           - name: checkout repository
-             uses: actions/checkout@v4
+      - name: Terraform Init
+        run: terraform init
 
+      - name: Terraform Validate
+        run: terraform validate
 
-           - name: set up terraform
-             uses: hashicorp/setup-terraform@v3
-             with:
-               terraform_version: "1.1.7"
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
 
-
-           - name: terraform init
-             run: terraform init
-
-
-           - name: terraform validate
-             run: terraform validate
-          
-           - name: terraform plan
-             run: terraform plan -out=tfplan
-
-
-           - name: terraform apply
-             run: terraform apply -auto-approve tfplan
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
